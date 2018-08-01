@@ -1,5 +1,4 @@
 FROM centos:7
-
 RUN yum -y update \
     && mkdir -p /app \ 
     && yum -y install openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel \
@@ -13,5 +12,4 @@ RUN yum -y update \
 	&& ln -sf /app/Python-3.7.0/bin/python3 /usr/bin/python \
 	&& ln -sf /app/Python-3.7.0/bin/pydoc3 /usr/bin/pydoc \
     && python --version
-
 CMD ["python"]

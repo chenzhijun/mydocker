@@ -1,0 +1,1078 @@
+[root@cnsz92vl01357 mwop]# fdisk /dev/vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0xa7fb336b.
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-419430399, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-419430399, default 419430399): +100G
+Partition 1 of type Linux and of size 100 GiB is set
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): L
+
+ 0  Empty           24  NEC DOS         81  Minix / old Lin bf  Solaris        
+ 1  FAT12           27  Hidden NTFS Win 82  Linux swap / So c1  DRDOS/sec (FAT-
+ 2  XENIX root      39  Plan 9          83  Linux           c4  DRDOS/sec (FAT-
+ 3  XENIX usr       3c  PartitionMagic  84  OS/2 hidden C:  c6  DRDOS/sec (FAT-
+ 4  FAT16 <32M      40  Venix 80286     85  Linux extended  c7  Syrinx         
+ 5  Extended        41  PPC PReP Boot   86  NTFS volume set da  Non-FS data    
+ 6  FAT16           42  SFS             87  NTFS volume set db  CP/M / CTOS / .
+ 7  HPFS/NTFS/exFAT 4d  QNX4.x          88  Linux plaintext de  Dell Utility   
+ 8  AIX             4e  QNX4.x 2nd part 8e  Linux LVM       df  BootIt         
+ 9  AIX bootable    4f  QNX4.x 3rd part 93  Amoeba          e1  DOS access     
+ a  OS/2 Boot Manag 50  OnTrack DM      94  Amoeba BBT      e3  DOS R/O        
+ b  W95 FAT32       51  OnTrack DM6 Aux 9f  BSD/OS          e4  SpeedStor      
+ c  W95 FAT32 (LBA) 52  CP/M            a0  IBM Thinkpad hi eb  BeOS fs        
+ e  W95 FAT16 (LBA) 53  OnTrack DM6 Aux a5  FreeBSD         ee  GPT            
+ f  W95 Ext'd (LBA) 54  OnTrackDM6      a6  OpenBSD         ef  EFI (FAT-12/16/
+10  OPUS            55  EZ-Drive        a7  NeXTSTEP        f0  Linux/PA-RISC b
+11  Hidden FAT12    56  Golden Bow      a8  Darwin UFS      f1  SpeedStor      
+12  Compaq diagnost 5c  Priam Edisk     a9  NetBSD          f4  SpeedStor      
+14  Hidden FAT16 <3 61  SpeedStor       ab  Darwin boot     f2  DOS secondary  
+16  Hidden FAT16    63  GNU HURD or Sys af  HFS / HFS+      fb  VMware VMFS    
+17  Hidden HPFS/NTF 64  Novell Netware  b7  BSDI fs         fc  VMware VMKCORE 
+18  AST SmartSleep  65  Novell Netware  b8  BSDI swap       fd  Linux raid auto
+1b  Hidden W95 FAT3 70  DiskSecure Mult bb  Boot Wizard hid fe  LANstep        
+1c  Hidden W95 FAT3 75  PC/IX           be  Solaris boot    ff  BBT            
+1e  Hidden W95 FAT1 80  Old Minix      
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'
+
+Command (m for help): p
+
+Disk /dev/vdb: 214.7 GB, 214748364800 bytes, 419430400 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xa7fb336b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vdb1            2048   209717247   104857600   8e  Linux LVM
+
+[root@cnsz92vl01357 mwop]# pvcreate /dev/vdb1
+  Physical volume "/dev/vdb1" successfully created
+[root@cnsz92vl01357 mwop]# pvcreate --setphysicalvolumesize 100G /dev/vdb1
+  Physical volume "/dev/vdb1" successfully created
+
+[root@cnsz92vl01357 mwop]# pvdisplay /dev/vdb1
+  "/dev/vdb1" is a new physical volume of "100.00 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/vdb1
+  VG Name               
+  PV Size               100.00 GiB
+  Allocatable           NO
+  PE Size               0   
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               xCET9g-4xZm-GJpy-u9N8-2XEc-5lSj-BcGbD1
+
+[root@cnsz92vl01357 mwop]# pvs /dev/vdb1
+  PV         VG   Fmt  Attr PSize   PFree  
+  /dev/vdb1       lvm2 ---  100.00g 100.00g
+[root@cnsz92vl01357 mwop]# pvscan
+  PV /dev/vda2   VG vg00   lvm2 [59.53 GiB / 0    free]
+  PV /dev/vdb1             lvm2 [100.00 GiB]
+  Total: 2 [159.53 GiB] / in use: 1 [59.53 GiB] / in no VG: 1 [100.00 GiB]
+
+[root@cnsz92vl01357 mwop]# vgcreate vg_jenkins /dev/vdb1
+  Volume group "vg_jenkins" successfully created
+[root@cnsz92vl01357 mwop]# vgdisplay vg_jenkins
+  --- Volume group ---
+  VG Name               vg_jenkins
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               100.00 GiB
+  PE Size               4.00 MiB
+  Total PE              25599
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       25599 / 100.00 GiB
+  VG UUID               4bdtRk-Fh3f-t5R3-ZZv8-jBGQ-SC4N-Oi34B7
+
+  
+[root@cnsz92vl01357 mwop]# pvscan
+  PV /dev/vda2   VG vg00         lvm2 [59.53 GiB / 0    free]
+  PV /dev/vdb1   VG vg_jenkins   lvm2 [100.00 GiB / 100.00 GiB free]
+  Total: 2 [159.53 GiB] / in use: 2 [159.53 GiB] / in no VG: 0 [0   ]
+[root@cnsz92vl01357 mwop]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+[root@cnsz92vl01357 mwop]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/vdb1
+  VG Name               vg_jenkins
+  PV Size               100.00 GiB / not usable 4.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              25599
+  Free PE               25599
+  Allocated PE          0
+  PV UUID               xCET9g-4xZm-GJpy-u9N8-2XEc-5lSj-BcGbD1
+   
+  --- Physical volume ---
+  PV Name               /dev/vda2
+  VG Name               vg00
+  PV Size               59.53 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              15240
+  Free PE               0
+  Allocated PE          15240
+  PV UUID               yNbIDB-y1ex-FYzm-r7Hs-lkSZ-MWIg-q3z6mD
+   
+[root@cnsz92vl01357 mwop]# fdisk /dev/vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): n
+Partition type:
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended
+Select (default p): p
+Partition number (2-4, default 2): 2
+First sector (209717248-419430399, default 209717248): 
+Using default value 209717248
+Last sector, +sectors or +size{K,M,G} (209717248-419430399, default 419430399): +50G
+Partition 2 of type Linux and of size 50 GiB is set
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): t
+Partition number (1,2, default 2): 2
+Hex code (type L to list all codes): L
+
+ 0  Empty           24  NEC DOS         81  Minix / old Lin bf  Solaris        
+ 1  FAT12           27  Hidden NTFS Win 82  Linux swap / So c1  DRDOS/sec (FAT-
+ 2  XENIX root      39  Plan 9          83  Linux           c4  DRDOS/sec (FAT-
+ 3  XENIX usr       3c  PartitionMagic  84  OS/2 hidden C:  c6  DRDOS/sec (FAT-
+ 4  FAT16 <32M      40  Venix 80286     85  Linux extended  c7  Syrinx         
+ 5  Extended        41  PPC PReP Boot   86  NTFS volume set da  Non-FS data    
+ 6  FAT16           42  SFS             87  NTFS volume set db  CP/M / CTOS / .
+ 7  HPFS/NTFS/exFAT 4d  QNX4.x          88  Linux plaintext de  Dell Utility   
+ 8  AIX             4e  QNX4.x 2nd part 8e  Linux LVM       df  BootIt         
+ 9  AIX bootable    4f  QNX4.x 3rd part 93  Amoeba          e1  DOS access     
+ a  OS/2 Boot Manag 50  OnTrack DM      94  Amoeba BBT      e3  DOS R/O        
+ b  W95 FAT32       51  OnTrack DM6 Aux 9f  BSD/OS          e4  SpeedStor      
+ c  W95 FAT32 (LBA) 52  CP/M            a0  IBM Thinkpad hi eb  BeOS fs        
+ e  W95 FAT16 (LBA) 53  OnTrack DM6 Aux a5  FreeBSD         ee  GPT            
+ f  W95 Ext'd (LBA) 54  OnTrackDM6      a6  OpenBSD         ef  EFI (FAT-12/16/
+10  OPUS            55  EZ-Drive        a7  NeXTSTEP        f0  Linux/PA-RISC b
+11  Hidden FAT12    56  Golden Bow      a8  Darwin UFS      f1  SpeedStor      
+12  Compaq diagnost 5c  Priam Edisk     a9  NetBSD          f4  SpeedStor      
+14  Hidden FAT16 <3 61  SpeedStor       ab  Darwin boot     f2  DOS secondary  
+16  Hidden FAT16    63  GNU HURD or Sys af  HFS / HFS+      fb  VMware VMFS    
+17  Hidden HPFS/NTF 64  Novell Netware  b7  BSDI fs         fc  VMware VMKCORE 
+18  AST SmartSleep  65  Novell Netware  b8  BSDI swap       fd  Linux raid auto
+1b  Hidden W95 FAT3 70  DiskSecure Mult bb  Boot Wizard hid fe  LANstep        
+1c  Hidden W95 FAT3 75  PC/IX           be  Solaris boot    ff  BBT            
+1e  Hidden W95 FAT1 80  Old Minix      
+Hex code (type L to list all codes): 84^Heaadsf
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+[root@cnsz92vl01357 mwop]# fdisk -l
+
+Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000c15f2
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vda1   *        2048      976895      487424   83  Linux
+/dev/vda2          976896   125829119    62426112   8e  Linux LVM
+
+Disk /dev/vdb: 214.7 GB, 214748364800 bytes, 419430400 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xa7fb336b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vdb1            2048   209717247   104857600   8e  Linux LVM
+/dev/vdb2       209717248   314574847    52428800   8e  Linux LVM
+
+Disk /dev/mapper/vg00-root: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-home: 524 MB, 524288000 bytes, 1024000 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-var: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-tmp: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-app: 31.2 GB, 31184650240 bytes, 60907520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+[root@cnsz92vl01357 mwop]# pv -l
+bash: pv: command not found
+[root@cnsz92vl01357 mwop]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+[root@cnsz92vl01357 mwop]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  vg00         1   5   0 wz--n-  59.53g      0 
+  vg_jenkins   1   0   0 wz--n- 100.00g 100.00g
+[root@cnsz92vl01357 mwop]# vgextend vg00 /dev/vdb2
+  Physical volume "/dev/vdb2" successfully created
+  Volume group "vg00" successfully extended
+[root@cnsz92vl01357 mwop]# vgdisplay vg00
+  --- Volume group ---
+  VG Name               vg00
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  10
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                5
+  Open LV               5
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               109.53 GiB
+  PE Size               4.00 MiB
+  Total PE              28039
+  Alloc PE / Size       15240 / 59.53 GiB
+  Free  PE / Size       12799 / 50.00 GiB
+  VG UUID               9x3ey2-G2Vd-dbj7-9qvZ-ySX8-CSzo-lzFqdF
+   
+[root@cnsz92vl01357 mwop]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   73M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home  497M  497M   20K 100% /home
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# lvextend -L 50G /dev/vg_probe/lv_data
+  Volume group "vg_probe" not found
+[root@cnsz92vl01357 mwop]# lvextend -L 50G /dev/mapper/vg00-home
+  Size of logical volume vg00/home changed from 500.00 MiB (125 extents) to 50.00 GiB (12800 extents).
+  Logical volume home successfully resized.
+[root@cnsz92vl01357 mwop]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   73M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home  497M  497M   20K 100% /home
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# lvdisplay /dev/mapper/vg00-home
+  --- Logical volume ---
+  LV Path                /dev/vg00/home
+  LV Name                home
+  VG Name                vg00
+  LV UUID                rt3GBx-S0vY-9fWw-qdMc-1smi-gxJj-RV1zw5
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2017-07-28 11:41:24 +0800
+  LV Status              available
+  # open                 1
+  LV Size                50.00 GiB
+  Current LE             12800
+  Segments               2
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+   
+[root@cnsz92vl01357 mwop]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+  /dev/vdb2  vg00       lvm2 a--   50.00g 496.00m
+
+[root@cnsz92vl01357 mwop]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  vg00         2   5   0 wz--n- 109.53g 496.00m
+  vg_jenkins   1   0   0 wz--n- 100.00g 100.00g
+
+[root@cnsz92vl01357 mwop]# df -hT
+Filesystem            Type      Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root xfs        10G  1.5G  8.6G  15% /
+devtmpfs              devtmpfs   16G     0   16G   0% /dev
+tmpfs                 tmpfs      16G     0   16G   0% /dev/shm
+tmpfs                 tmpfs      16G   73M   16G   1% /run
+tmpfs                 tmpfs      16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var  xfs        10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home xfs       497M  497M   20K 100% /home
+/dev/mapper/vg00-app  xfs        30G  420M   29G   2% /app
+/dev/vda1             xfs       473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp  xfs        10G   33M   10G   1% /tmp
+tmpfs                 tmpfs     3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# xfs_growfs /dev/mapper/vg00-home
+meta-data=/dev/mapper/vg00-home  isize=256    agcount=4, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=128000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal               bsize=4096   blocks=853, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 128000 to 13107200
+[root@cnsz92vl01357 mwop]# df -hT
+Filesystem            Type      Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root xfs        10G  1.5G  8.6G  15% /
+devtmpfs              devtmpfs   16G     0   16G   0% /dev
+tmpfs                 tmpfs      16G     0   16G   0% /dev/shm
+tmpfs                 tmpfs      16G   73M   16G   1% /run
+tmpfs                 tmpfs      16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var  xfs        10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home xfs        50G  510M   50G   1% /home
+/dev/mapper/vg00-app  xfs        30G  420M   29G   2% /app
+/dev/vda1             xfs       473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp  xfs        10G   33M   10G   1% /tmp
+tmpfs                 tmpfs     3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# ls
+tools.tar.gz
+[root@cnsz92vl01357 mwop]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   73M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home   50G  510M   50G   1% /home
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda           252:0    0   60G  0 disk 
+├─vda1        252:1    0  476M  0 part /boot
+└─vda2        252:2    0 59.5G  0 part 
+  ├─vg00-root 253:0    0   10G  0 lvm  /
+  ├─vg00-home 253:1    0   50G  0 lvm  /home
+  ├─vg00-var  253:2    0   10G  0 lvm  /var
+  ├─vg00-tmp  253:3    0   10G  0 lvm  /tmp
+  └─vg00-app  253:4    0   29G  0 lvm  /app
+vdb           252:16   0  200G  0 disk 
+├─vdb1        252:17   0  100G  0 part 
+└─vdb2        252:18   0   50G  0 part 
+  └─vg00-home 253:1    0   50G  0 lvm  /home
+
+[root@cnsz92vl01357 mwop]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+  /dev/vdb2  vg00       lvm2 a--   50.00g 496.00m
+[root@cnsz92vl01357 mwop]# vgrename aa vg_jenkins
+  Volume group "aa" not found
+[root@cnsz92vl01357 mwop]# vgrename vg_jenkins vg00
+  /dev/vg00: already exists in filesystem
+
+[root@cnsz92vl01357 mwop]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   73M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/mapper/vg00-home   50G  510M   50G   1% /home
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 mwop]# lvs
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  app  vg00 -wi-ao---- 29.04g                                                    
+  home vg00 -wi-ao---- 50.00g                                                    
+  root vg00 -wi-ao---- 10.00g                                                    
+  tmp  vg00 -wi-ao---- 10.00g                                                    
+  var  vg00 -wi-ao---- 10.00g                                                    
+[root@cnsz92vl01357 mwop]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+  /dev/vdb2  vg00       lvm2 a--   50.00g 496.00m
+[root@cnsz92vl01357 mwop]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  vg00         2   5   0 wz--n- 109.53g 496.00m
+  vg_jenkins   1   0   0 wz--n- 100.00g 100.00g
+[root@cnsz92vl01357 mwop]# pvcreate /dev/vdb3
+  Device /dev/vdb3 not found (or ignored by filtering).
+[root@cnsz92vl01357 mwop]# fdisk -l /dev/vdb
+
+Disk /dev/vdb: 214.7 GB, 214748364800 bytes, 419430400 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xa7fb336b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vdb1            2048   209717247   104857600   8e  Linux LVM
+/dev/vdb2       209717248   314574847    52428800   8e  Linux LVM
+/dev/vdb3       314574848   419430399    52427776   8e  Linux LVM
+
+[root@cnsz92vl01357 mwop]# fdisk /dev/vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): d
+Partition number (1-3, default 3): 3
+Partition 3 is deleted
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+[root@cnsz92vl01357 mwop]# fdisk -l
+
+Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000c15f2
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vda1   *        2048      976895      487424   83  Linux
+/dev/vda2          976896   125829119    62426112   8e  Linux LVM
+
+Disk /dev/vdb: 214.7 GB, 214748364800 bytes, 419430400 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xa7fb336b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vdb1            2048   209717247   104857600   8e  Linux LVM
+/dev/vdb2       209717248   314574847    52428800   8e  Linux LVM
+
+Disk /dev/mapper/vg00-root: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-home: 53.7 GB, 53687091200 bytes, 104857600 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-var: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-tmp: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-app: 31.2 GB, 31184650240 bytes, 60907520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+[root@cnsz92vl01357 mwop]# lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda           252:0    0   60G  0 disk 
+├─vda1        252:1    0  476M  0 part /boot
+└─vda2        252:2    0 59.5G  0 part 
+  ├─vg00-root 253:0    0   10G  0 lvm  /
+  ├─vg00-home 253:1    0   50G  0 lvm  /home
+  ├─vg00-var  253:2    0   10G  0 lvm  /var
+  ├─vg00-tmp  253:3    0   10G  0 lvm  /tmp
+  └─vg00-app  253:4    0   29G  0 lvm  /app
+vdb           252:16   0  200G  0 disk 
+├─vdb1        252:17   0  100G  0 part 
+└─vdb2        252:18   0   50G  0 part 
+  └─vg00-home 253:1    0   50G  0 lvm  /home
+[root@cnsz92vl01357 mwop]# fdisk /dev/vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+Partition type:
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended
+Select (default p): p
+Partition number (3,4, default 3): 3
+First sector (314574848-419430399, default 314574848): 
+Using default value 314574848
+Last sector, +sectors or +size{K,M,G} (314574848-419430399, default 419430399): 
+Using default value 419430399
+Partition 3 of type Linux and of size 50 GiB is set
+
+Command (m for help): t
+Partition number (1-3, default 3): ^C
+[root@cnsz92vl01357 mwop]# fdisk /dev/vdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+Partition type:
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended
+Select (default p): p
+Partition number (3,4, default 3): 3
+First sector (314574848-419430399, default 314574848): 
+Using default value 314574848
+Last sector, +sectors or +size{K,M,G} (314574848-419430399, default 419430399): 
+Using default value 419430399
+Partition 3 of type Linux and of size 50 GiB is set
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): t
+Partition number (1-3, default 3): 3
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+
+[root@cnsz92vl01357 rhlog]# lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda           252:0    0   60G  0 disk 
+├─vda1        252:1    0  476M  0 part /boot
+└─vda2        252:2    0 59.5G  0 part 
+  ├─vg00-root 253:0    0   10G  0 lvm  /
+  ├─vg00-home 253:1    0   50G  0 lvm  /home
+  ├─vg00-var  253:2    0   10G  0 lvm  /var
+  ├─vg00-tmp  253:3    0   10G  0 lvm  /tmp
+  └─vg00-app  253:4    0   29G  0 lvm  /app
+vdb           252:16   0  200G  0 disk 
+├─vdb1        252:17   0  100G  0 part 
+├─vdb2        252:18   0   50G  0 part 
+│ └─vg00-home 253:1    0   50G  0 lvm  /home
+└─vdb3        252:19   0   50G  0 part 
+[root@cnsz92vl01357 rhlog]# df -hT
+Filesystem            Type      Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root xfs        10G  1.5G  8.6G  15% /
+devtmpfs              devtmpfs   16G     0   16G   0% /dev
+tmpfs                 tmpfs      16G     0   16G   0% /dev/shm
+tmpfs                 tmpfs      16G   17M   16G   1% /run
+tmpfs                 tmpfs      16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app  xfs        30G  420M   29G   2% /app
+/dev/mapper/vg00-var  xfs        10G  245M  9.8G   3% /var
+/dev/vda1             xfs       473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp  xfs        10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home xfs        50G  517M   50G   2% /home
+tmpfs                 tmpfs     3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 rhlog]# fdisk -l
+
+Disk /dev/vda: 64.4 GB, 64424509440 bytes, 125829120 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000c15f2
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vda1   *        2048      976895      487424   83  Linux
+/dev/vda2          976896   125829119    62426112   8e  Linux LVM
+
+Disk /dev/vdb: 214.7 GB, 214748364800 bytes, 419430400 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0xa7fb336b
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/vdb1            2048   209717247   104857600   8e  Linux LVM
+/dev/vdb2       209717248   314574847    52428800   8e  Linux LVM
+/dev/vdb3       314574848   419430399    52427776   8e  Linux LVM
+
+Disk /dev/mapper/vg00-root: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-home: 53.7 GB, 53687091200 bytes, 104857600 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-var: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-tmp: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/vg00-app: 31.2 GB, 31184650240 bytes, 60907520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+[root@cnsz92vl01357 rhlog]# pvs
+  PV         VG         Fmt  Attr PSize   PFree  
+  /dev/vda2  vg00       lvm2 a--   59.53g      0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 100.00g
+  /dev/vdb2  vg00       lvm2 a--   50.00g 496.00m
+[root@cnsz92vl01357 rhlog]# lvs
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  app  vg00 -wi-ao---- 29.04g                                                    
+  home vg00 -wi-ao---- 50.00g                                                    
+  root vg00 -wi-ao---- 10.00g                                                    
+  tmp  vg00 -wi-ao---- 10.00g                                                    
+  var  vg00 -wi-ao---- 10.00g 
+
+[root@cnsz92vl01357 rhlog]# vgextend /dev/mapper/vg00 /dev/vdb3
+  Volume group "vg00" successfully extended
+[root@cnsz92vl01357 rhlog]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   17M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home   50G  517M   50G   2% /home
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 rhlog]# xfs_growfs /home/
+meta-data=/dev/mapper/vg00-home  isize=256    agcount=410, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=13107200, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal               bsize=4096   blocks=853, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@cnsz92vl01357 rhlog]# df -hT
+Filesystem            Type      Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root xfs        10G  1.5G  8.6G  15% /
+devtmpfs              devtmpfs   16G     0   16G   0% /dev
+tmpfs                 tmpfs      16G     0   16G   0% /dev/shm
+tmpfs                 tmpfs      16G   17M   16G   1% /run
+tmpfs                 tmpfs      16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app  xfs        30G  420M   29G   2% /app
+/dev/mapper/vg00-var  xfs        10G  245M  9.8G   3% /var
+/dev/vda1             xfs       473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp  xfs        10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home xfs        50G  517M   50G   2% /home
+tmpfs                 tmpfs     3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 rhlog]# lvextend -L +100%FREE /dev/mapper/vg00-home
+  Invalid argument for --size: +100%FREE
+  Error during parsing of command line.
+[root@cnsz92vl01357 rhlog]# lvextend -l +100%FREE /dev/mapper/vg00-home
+  Size of logical volume vg00/home changed from 50.00 GiB (12800 extents) to 100.48 GiB (25723 extents).
+  Logical volume home successfully resized.
+
+[root@cnsz92vl01357 rhlog]# xfs_growfs /home/
+meta-data=/dev/mapper/vg00-home  isize=256    agcount=410, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=13107200, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal               bsize=4096   blocks=853, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 13107200 to 26340352
+[root@cnsz92vl01357 rhlog]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   17M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home  101G  530M  100G   1% /home
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+
+
+[root@cnsz92vl01357 rhlog]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  vg00         3   5   0 wz--n- 159.52g      0 
+  vg_jenkins   1   0   0 wz--n- 100.00g 100.00g
+[root@cnsz92vl01357 rhlog]# vgdisplay vg_jenkins
+  --- Volume group ---
+  VG Name               vg_jenkins
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               100.00 GiB
+  PE Size               4.00 MiB
+  Total PE              25599
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       25599 / 100.00 GiB
+  VG UUID               4bdtRk-Fh3f-t5R3-ZZv8-jBGQ-SC4N-Oi34B7
+   
+[root@cnsz92vl01357 rhlog]# lvcreate -L 5G -n lv_jenkins vg_jenkins
+  Logical volume "lv_jenkins" created.
+[root@cnsz92vl01357 rhlog]# lvs
+  LV         VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  app        vg00       -wi-ao----  29.04g                                                    
+  home       vg00       -wi-ao---- 100.48g                                                    
+  root       vg00       -wi-ao----  10.00g                                                    
+  tmp        vg00       -wi-ao----  10.00g                                                    
+  var        vg00       -wi-ao----  10.00g                                                    
+  lv_jenkins vg_jenkins -wi-a-----   5.00g                                                    
+[root@cnsz92vl01357 rhlog]# lvdisplay /dev/vg_jenkins/lv_jenkins
+  --- Logical volume ---
+  LV Path                /dev/vg_jenkins/lv_jenkins
+  LV Name                lv_jenkins
+  VG Name                vg_jenkins
+  LV UUID                vp5Iaf-rfyI-3dC8-F3Jt-5r7N-oVGT-RNMuF6
+  LV Write Access        read/write
+  LV Creation host, time cnsz92vl01357, 2018-08-14 12:03:07 +0800
+  LV Status              available
+  # open                 0
+  LV Size                5.00 GiB
+  Current LE             1280
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:5
+   
+[root@cnsz92vl01357 rhlog]# lvextend -L 5G /dev/vg_jenkins/lv_jenkins
+  New size (1280 extents) matches existing size (1280 extents)
+  Run `lvextend --help' for more information.
+[root@cnsz92vl01357 rhlog]# lvdisplay /dev/vg_jenkins/lv_jenkins
+  --- Logical volume ---
+  LV Path                /dev/vg_jenkins/lv_jenkins
+  LV Name                lv_jenkins
+  VG Name                vg_jenkins
+  LV UUID                vp5Iaf-rfyI-3dC8-F3Jt-5r7N-oVGT-RNMuF6
+  LV Write Access        read/write
+  LV Creation host, time cnsz92vl01357, 2018-08-14 12:03:07 +0800
+  LV Status              available
+  # open                 0
+  LV Size                5.00 GiB
+  Current LE             1280
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:5
+   
+[root@cnsz92vl01357 rhlog]# lvextend -L 10G /dev/vg_jenkins/lv_jenkins
+  Size of logical volume vg_jenkins/lv_jenkins changed from 5.00 GiB (1280 extents) to 10.00 GiB (2560 extents).
+  Logical volume lv_jenkins successfully resized.
+[root@cnsz92vl01357 rhlog]# lvdisplay /dev/vg_jenkins/lv_jenkins
+  --- Logical volume ---
+  LV Path                /dev/vg_jenkins/lv_jenkins
+  LV Name                lv_jenkins
+  VG Name                vg_jenkins
+  LV UUID                vp5Iaf-rfyI-3dC8-F3Jt-5r7N-oVGT-RNMuF6
+  LV Write Access        read/write
+  LV Creation host, time cnsz92vl01357, 2018-08-14 12:03:07 +0800
+  LV Status              available
+  # open                 0
+  LV Size                10.00 GiB
+  Current LE             2560
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:5
+
+[root@cnsz92vl01357 rhlog]# mkfs.xfs /dev/vg_jenkins/lv_jenkins
+meta-data=/dev/vg_jenkins/lv_jenkins isize=512    agcount=4, agsize=655360 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=2621440, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+[root@cnsz92vl01357 rhlog]# mkfs.xfs /dev/vg_jenkins/lv_jenkins
+meta-data=/dev/vg_jenkins/lv_jenkins isize=512    agcount=4, agsize=655360 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=2621440, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+[root@cnsz92vl01357 rhlog]# mkdir /data
+[root@cnsz92vl01357 rhlog]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root   10G  1.5G  8.6G  15% /
+devtmpfs                16G     0   16G   0% /dev
+tmpfs                   16G     0   16G   0% /dev/shm
+tmpfs                   16G   17M   16G   1% /run
+tmpfs                   16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app    30G  420M   29G   2% /app
+/dev/mapper/vg00-var    10G  245M  9.8G   3% /var
+/dev/vda1              473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp    10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home  101G  530M  100G   1% /home
+tmpfs                  3.2G     0  3.2G   0% /run/user/800
+[root@cnsz92vl01357 rhlog]# mount -t xfs /dev/vg_jenkins/lv_jenkins /data
+[root@cnsz92vl01357 rhlog]# df -hT
+Filesystem                        Type      Size  Used Avail Use% Mounted on
+/dev/mapper/vg00-root             xfs        10G  1.5G  8.6G  15% /
+devtmpfs                          devtmpfs   16G     0   16G   0% /dev
+tmpfs                             tmpfs      16G     0   16G   0% /dev/shm
+tmpfs                             tmpfs      16G   17M   16G   1% /run
+tmpfs                             tmpfs      16G     0   16G   0% /sys/fs/cgroup
+/dev/mapper/vg00-app              xfs        30G  420M   29G   2% /app
+/dev/mapper/vg00-var              xfs        10G  245M  9.8G   3% /var
+/dev/vda1                         xfs       473M  173M  301M  37% /boot
+/dev/mapper/vg00-tmp              xfs        10G   33M   10G   1% /tmp
+/dev/mapper/vg00-home             xfs       101G  530M  100G   1% /home
+tmpfs                             tmpfs     3.2G     0  3.2G   0% /run/user/800
+/dev/mapper/vg_jenkins-lv_jenkins xfs        10G   33M   10G   1% /data
+
+[root@cnsz92vl01357 rhlog]# vi /etc/fstab
+[root@cnsz92vl01357 rhlog]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Fri Jul 28 11:41:26 2017
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/vg00-root   /                       xfs     defaults        0 0
+/dev/mapper/vg00-app    /app                    xfs     defaults        0 0
+UUID=72b87e35-1004-4bbe-bb84-b8628c925d22 /boot                   xfs     defaults        0 0
+/dev/mapper/vg00-home   /home                   xfs     defaults        0 0
+/dev/mapper/vg00-tmp    /tmp                    xfs     defaults        0 0
+/dev/mapper/vg00-var    /var                    xfs     defaults        0 0
+/dev/vg_jenkins/lv_jenkins    /data                    xfs     defaults        0 2
+
+[root@cnsz92vl01357 rhlog]# mount -fav
+/                        : ignored
+/app                     : already mounted
+/boot                    : already mounted
+/home                    : already mounted
+/tmp                     : already mounted
+/var                     : already mounted
+/data                    : already mounted
+
+[root@cnsz92vl01357 rhlog]# lvs
+  LV         VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  app        vg00       -wi-ao----  29.04g                                                    
+  home       vg00       -wi-ao---- 100.48g                                                    
+  root       vg00       -wi-ao----  10.00g                                                    
+  tmp        vg00       -wi-ao----  10.00g                                                    
+  var        vg00       -wi-ao----  10.00g                                                    
+  lv_jenkins vg_jenkins -wi-ao----  10.00g                                                    
+[root@cnsz92vl01357 rhlog]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree 
+  vg00         3   5   0 wz--n- 159.52g     0 
+  vg_jenkins   1   1   0 wz--n- 100.00g 90.00g
+[root@cnsz92vl01357 rhlog]# pvs
+  PV         VG         Fmt  Attr PSize   PFree 
+  /dev/vda2  vg00       lvm2 a--   59.53g     0 
+  /dev/vdb1  vg_jenkins lvm2 a--  100.00g 90.00g
+  /dev/vdb2  vg00       lvm2 a--   50.00g     0 
+  /dev/vdb3  vg00       lvm2 a--   50.00g     0
+

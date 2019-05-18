@@ -1,1 +1,3 @@
+script: 
+ - "bash ./docker-build.sh"
 

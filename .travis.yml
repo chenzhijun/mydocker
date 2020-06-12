@@ -2,5 +2,9 @@ sudo: required
 services:
   - docker
 script: 
- - "bash ./docker-build.sh"
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin registry.cn-beijing.aliyuncs.com
+  - docker run --rm --entrypoint="/usr/local/bin/runone.sh" registry.cn-beijing.aliyuncs.com/alvinchen/stock-sync:v0.0.6
+
+script:
+  - echo "ok"
 
